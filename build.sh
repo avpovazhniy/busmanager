@@ -1,1 +1,1 @@
-gcc manager.cpp -o manager -Wl,--gc-sections,--strip-all
+gcc -std=c++11 manager.cpp -o manager -Wl,--gc-sections,--strip-all
