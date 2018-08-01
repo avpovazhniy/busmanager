@@ -1,0 +1,1 @@
+gcc manager.cpp -o manager -Wl,--gc-sections,--strip-all
