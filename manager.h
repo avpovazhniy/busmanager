@@ -2,8 +2,11 @@
 #define __MANAGER__
 
 #include <stdint.h>
+#include <unordered_map>
+#include <string>
+#include <list>
 
-#define MAX_TGRAM_SIZE (1498) // максимальная длина телеграммы
+#define MAX_TGR_SIZE (1498) // максимальная длина телеграммы
 #define MAX_MSG_SIZE (300) // максимальная длина сообщения
 
 #pragma pack(push, 1)
@@ -29,5 +32,24 @@ typedef struct Message_tag
 	char data[];
 } Message;
 #pragma pack(pop)
+
+typedef struct Module_tag
+{
+	std::string name;
+	uint32_t addr;
+	uint16_t msglength;
+	uint16_t counter;
+} Module;
+
+class Bus
+{
+	public:
+		Bus(const char*);
+		std::list<Message*> MessageList;
+//		void SendMessages();
+	private:
+		std::unordered_map <uint32_t, Module> Modules;
+		std::list <Telegram> TelegramList;
+};
 
 #endif
