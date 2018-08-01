@@ -6,6 +6,7 @@
 #define MAX_TGRAM_SIZE (1498) // максимальная длина телеграммы
 #define MAX_MSG_SIZE (300) // максимальная длина сообщения
 
+#pragma pack(push, 1)
 typedef struct Telegram_tag
 {
 	uint16_t length;
@@ -18,8 +19,8 @@ typedef struct Datagram_tag
 	uint32_t addr;
 	uint16_t length;
 	char data[];
-//	uint16_t counter; // по условию счётчик расположен именно здесь, это неудачно, лучше бы его расположить перед полем с данными, но вероятно это аппаратное ограничение
-//	придётся счётчик "дописывать" в конец данных
+//	uint16_t counter; // по условию счётчик расположен именно здесь, это неудачно, лучше бы его расположить
+//	перед полем с данными, но вероятно это аппаратное ограничение, придётся счётчик "дописывать" в конец данных
 } Datagram;
 
 typedef struct Message_tag
@@ -27,5 +28,6 @@ typedef struct Message_tag
 	uint16_t length;
 	char data[];
 } Message;
+#pragma pack(pop)
 
 #endif
