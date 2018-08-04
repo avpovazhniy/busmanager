@@ -1,1 +1,1 @@
-g++ -std=c++11 manager.cpp -o manager -Wl,--gc-sections,--strip-all
+g++ -std=c++11 dispatcher.cpp manager.cpp -o dispatcher -Wl,--gc-sections,--strip-all

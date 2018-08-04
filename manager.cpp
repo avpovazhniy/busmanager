@@ -1,4 +1,4 @@
-#include <iostream>
+#include <iostream> //!!!debug
 #include "manager.h"
 
 Module::Module(const char* n, uint32_t a, uint16_t l)
@@ -6,7 +6,13 @@ Module::Module(const char* n, uint32_t a, uint16_t l)
 	name = n;
 	addr = a;
 	length = l;
+	data = new std::vector <char>(length);
 	counter = 0;
+}
+
+Module::~Module()
+{
+	delete data;
 }
 
 Bus::Bus(const char* inifile)
@@ -22,13 +28,7 @@ Bus::Bus(const char* inifile)
 	Modules.emplace(0x500, Module("RX500", 0x500, 50));
 	Modules.emplace(0x600, Module("RX600", 0x600, 60));
 
-//	for (auto it = Modules.begin(); it != Modules.end(); ++it) std::cout<<it->second.name<<std::endl;
+//	for (auto it = Modules.begin(); it != Modules.end(); ++it) std::cout<<it->second.name<<std::endl; //!!!debug
 
 	
-}
-
-int main(int argc, char* argv[])
-{
-	Bus bus("config.ini");
-	return 0;
 }

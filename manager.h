@@ -29,30 +29,24 @@ typedef struct Datagram_tag
 } Datagram;
 #pragma pack(pop)
 
-class Message // через такие элементы будем принимать извне данные дл€ передачи по шине и отправл€ть назад ответы
-{
-	public:
-		Message(uint32_t, std::vector <char>);
-		uint32_t addr;
-		std::vector <char> data;
-};
-
 class Module
 {
 	public:
 		Module(const char*, uint32_t, uint16_t);
-		std::string name;	// "им€" модул€, просто текстова€ строка
-		uint32_t addr;		// адрес модул€
-		uint16_t length;	// длина сообщени€ с которым работает модуль
-		uint16_t counter;	// значение счЄтчика, позволит отслеживать "потерю св€зи"
+		~Module();
+		std::string name;		// "им€" модул€, просто текстова€ строка
+		uint32_t addr;			// адрес модул€
+		uint16_t length;		// длина сообщени€ с которым работает модуль
+		std::vector <char>* data;	// здесь будут данные дл€ модул€ и также ответы от него
+		uint16_t counter;		// значение счЄтчика, позволит отслеживать "потерю св€зи"
 };
 
 class Bus
 {
 	public:
 		Bus(const char*);
-		Send(std::list <std::shared_ptr <Message> > MessageList);
-		std::list <std::shared_ptr <Message> > MessageList;
+//		Send(std::list <std::shared_ptr <Message> > MessageList);
+//		std::list <std::shared_ptr <Message> > MessageList;
 
 	private:
 		std::unordered_map <uint32_t, Module> Modules;
