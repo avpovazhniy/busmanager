@@ -1,18 +1,18 @@
 #include <iostream> //!!!debug
 #include "manager.h"
 
-Module::Module(const char* n, uint32_t a, uint16_t l)
+Module::Module(const char* name, uint32_t addr, uint16_t length)
 {
-	name = n;
-	addr = a;
-	length = l;
-	data = new char[length];
-	counter = 0;
+	Name = name;
+	Addr = addr;
+	Length = length;
+	Data = new char[Length];
+	Counter = 0;
 }
 
 Module::~Module()
 {
-	delete[] data;
+	delete[] Data;
 }
 
 Bus::Bus(const char* inifile)
