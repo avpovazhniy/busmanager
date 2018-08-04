@@ -6,13 +6,13 @@ Module::Module(const char* n, uint32_t a, uint16_t l)
 	name = n;
 	addr = a;
 	length = l;
-	data = new std::vector <char>(length);
+	data = new char[length];
 	counter = 0;
 }
 
 Module::~Module()
 {
-	delete data;
+	delete[] data;
 }
 
 Bus::Bus(const char* inifile)

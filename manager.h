@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <unordered_map>
-#include <vector>
 #include <memory>
 #include <string>
 #include <list>
@@ -34,11 +33,11 @@ class Module
 	public:
 		Module(const char*, uint32_t, uint16_t);
 		~Module();
-		std::string name;		// "им€" модул€, просто текстова€ строка
-		uint32_t addr;			// адрес модул€
-		uint16_t length;		// длина сообщени€ с которым работает модуль
-		std::vector <char>* data;	// здесь будут данные дл€ модул€ и также ответы от него
-		uint16_t counter;		// значение счЄтчика, позволит отслеживать "потерю св€зи"
+		std::string name;	// "им€" модул€, просто текстова€ строка
+		uint32_t addr;		// адрес модул€
+		uint16_t length;	// длина сообщени€ с которым работает модуль
+		char* data;		// здесь будут данные дл€ модул€ и также ответы от него
+		uint16_t counter;	// значение счЄтчика, позволит отслеживать "потерю св€зи"
 };
 
 class Bus
