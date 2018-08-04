@@ -46,6 +46,7 @@ class Bus
 	public:
 		Bus(const char*);
 		Module* GetModuleByAddr(uint32_t);
+		int SendData();
 
 		std::unordered_map <uint32_t, Module> Modules;
 };
