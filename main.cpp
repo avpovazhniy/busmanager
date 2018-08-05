@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 
 	int count = 0;
 	std::list <std::vector <char> > msgl;
-	for (auto it = bus.Modules.begin(); it != bus.Modules.end(); ++it)
+	for (auto it = bus.begin(); it != bus.end(); ++it)
 	{
 		std::string tmp = stringf("MESSAGE_%s_", it->second.Name.c_str());
 		for (int i = 0; i < count; i++) tmp += tmp;
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 		count++;
 	}
 
-	for (auto it = bus.Modules.begin(); it != bus.Modules.end(); ++it)
+	for (auto it = bus.begin(); it != bus.end(); ++it)
 	{
 		std::cout<<it->second.Name;
 		it->second.PrintMessage();

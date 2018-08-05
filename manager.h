@@ -45,6 +45,8 @@ class Bus
 {
 	public:
 		Bus(const char*);
+		std::unordered_map <uint32_t, Module>::iterator begin();
+		std::unordered_map <uint32_t, Module>::iterator end();
 		Module* GetModuleByAddr(uint32_t);
 		int SendData();
 

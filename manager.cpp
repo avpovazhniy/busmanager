@@ -39,18 +39,26 @@ Bus::Bus(const char* inifile)
 	Modules.emplace(0x600, Module("RX600_1", 0x600, 60));
 }
 
+std::unordered_map <uint32_t, Module>::iterator Bus::begin()
+{
+	return Modules.begin();
+}
+
+std::unordered_map <uint32_t, Module>::iterator Bus::end()
+{
+	return Modules.end();
+}
+
 Module* Bus::GetModuleByAddr(uint32_t addr)
 {
-	Module* result;
 	try
 	{
-		result = &Modules.at(addr);
+		return &Modules.at(addr);
 	}
 	catch (std::out_of_range e)
 	{
 		return NULL;
 	}
-	return result;
 }
 
 int Bus::SendData()
