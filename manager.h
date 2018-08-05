@@ -1,14 +1,15 @@
 #ifndef __MANAGER__
 #define __MANAGER__
 
-#include <stdint.h>
 #include <unordered_map>
+#include <stdint.h>
 #include <vector>
 #include <string>
 #include <list>
 
 #define MAX_TGR_SIZE (1498)
 #define MAX_MSG_SIZE (300)
+#define MAX_SCK_SIZE (MAX_TGR_SIZE)
 
 #pragma pack(push, 1)
 typedef struct Telegram_tag
@@ -27,18 +28,25 @@ typedef struct Datagram_tag
 } Datagram;
 #pragma pack(pop)
 
+class Bus;
+
 class Module
 {
+	friend class Bus;
 	public:
 		Module(const char*, uint32_t, uint16_t);
 		int SetData(std::vector <char>*);
 		void PrintMessage(); // debug
 
 		std::string Name;
+		std::vector <char>* Data;
+
+	private:
 		uint32_t Addr;
 		uint16_t Length;
-		std::vector <char>* Data;
 		uint16_t Counter;
+		size_t Offset;
+		size_t Remainder;
 };
 
 class Bus

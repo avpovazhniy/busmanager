@@ -63,10 +63,13 @@ int main(int argc, char* argv[])
 		module->PrintMessage();
 
 		std::vector <char> tmp = toVector("DEBUG_MESSAGE");
+//		std::cout<<"DEBUG_MESSAGE "<<tmp.size()<<std::endl;
 		module->SetData(&tmp);
 		std::cout<<module->Name;
 		module->PrintMessage();
 	}
+
+	bus.SendData();
 
 	return 0;
 }
