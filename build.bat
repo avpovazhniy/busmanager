@@ -1,1 +1,1 @@
-g++ -std=c++11 main.cpp manager.cpp -o main -Wl,--gc-sections,--strip-all
+cl /EHsc /MD main.cpp manager.cpp

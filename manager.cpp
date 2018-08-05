@@ -82,7 +82,7 @@ int Bus::SendData()
 			if (!module->Remainder) continue;
 			size_t partlength = module->Remainder > module->Length ? module->Length : module->Remainder;
 			if (tglength + partlength + sizeof(Datagram) > MAX_TGR_SIZE) break;
-			Datagram* datagram = (Datagram*) telegram->Data + tgoffset;
+			Datagram* datagram = (Datagram*) (telegram->Data + tgoffset);
 			datagram->Command = 0;	// certain value unknown by task, it must be to do in the future
 			datagram->Addr = module->Addr;
 			datagram->Length = partlength;
@@ -122,4 +122,5 @@ int Bus::SendData()
 	}
 
 	delete[] buffer;
+	return 0;
 }
