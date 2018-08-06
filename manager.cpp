@@ -74,6 +74,8 @@ bool Bus::SendData()
 
 	while(!EOD)
 	{
+		memset(buffer, 0, MAX_TGR_SIZE);
+
 		size_t tgoffset = 0;
 		ptrdiff_t tglength = telegram->Data - (char*) telegram; // If additional fields are added in the Telegram struct after Length field
 		if (tglength < 0)
@@ -83,9 +85,9 @@ bool Bus::SendData()
 			break;
 		}
 
+		EOD = true;
 		for (auto it = begin(); it != end(); ++it)
 		{
-			EOD = true;
 			Module* module = &it->second;
 			if (!module->Remainder) continue;
 			size_t partlength = module->Remainder > module->Length ? module->Length : module->Remainder;
@@ -101,7 +103,7 @@ bool Bus::SendData()
 			tgoffset += sizeof(Datagram) + datagram->Length + sizeof(counter_t);
 			counter_t* counter = (counter_t*) (datagram->Data + datagram->Length);
 			*counter = module->Counter;
-			EOD = false;
+			EOD &= (module->Remainder == 0);
 		}
 		telegram->Length = tglength;
 
@@ -129,8 +131,8 @@ bool Bus::SendData()
 			tmp += (size_t) sentbyte;
 			total += (size_t) sentbyte;
 			remainder -= (size_t) sentbyte;
-		} while (sentbyte != 0 && total < tglength);
-*/		
+		} while (sentbyte != 0 && total < tglength);*/
+
 	}
 
 	delete[] buffer;

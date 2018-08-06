@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <stdint.h>
+#include <cstring>
 #include <vector>
 #include <string>
 #include <list>
