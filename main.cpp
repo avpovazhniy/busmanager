@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 
 	int count = 0;
 	std::list <std::vector <char> > msgl;
-	for (auto it = bus.begin(); it != bus.end(); ++it)
+/*	for (auto it = bus.begin(); it != bus.end(); ++it)
 	{
 		std::string tmp = stringf("MESSAGE_%s_", it->second.Name.c_str());
 		for (int i = 0; i < count; i++) tmp += tmp;
@@ -54,19 +54,41 @@ int main(int argc, char* argv[])
 		std::cout<<it->second.Name;
 		it->second.PrintMessage();
 		std::cout<<std::endl;
-	}
+	}*/
 
-	Module* module = bus.GetModuleByAddr(0x200);
+	Module* module = NULL;
+	std::vector <char> data100 = toVector("THIS_IS_STREAM_MESSAGE_FOR_THE_RX100_1_MODULE!!!");
+	std::vector <char> data200 = toVector("DEBUG_MESSAGE_RX100!");
+	std::vector <char> data500 = toVector("LONG_LONG_DEBUG_MESSAGE_FOR_RX500_1_CONTROLLER_!!!");
+
+	module = bus.GetModuleByAddr(0x100);
 	if (module)
 	{
-		std::cout<<module->Name;
-		module->PrintMessage();
-
-		std::vector <char> tmp = toVector("DEBUG_MESSAGE");
-		module->SetData(&tmp);
+		module->Command = 'R';
+		module->SetData(&data100);
 		std::cout<<module->Name;
 		module->PrintMessage();
 	}
+
+	module = bus.GetModuleByAddr(0x200);
+	if (module)
+	{
+		module->Command = 'W';
+		module->SetData(&data200);
+		std::cout<<module->Name;
+		module->PrintMessage();
+	}
+
+	module = bus.GetModuleByAddr(0x500);
+	if (module)
+	{
+		module->Command = 'B';
+		module->SetData(&data500);
+		std::cout<<module->Name;
+		module->PrintMessage();
+	}
+
+	std::cout<<std::endl;
 
 	bus.SendData();
 

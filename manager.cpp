@@ -27,7 +27,7 @@ void Module::PrintMessage() // debug
 {
 	if (!Data) return;
 	std::string str(Data->begin(), Data->end());
-	std::cout<<".Data "<<str<<std::endl;
+	std::cout<<".DATA: "<<str<<std::endl;
 }
 
 Bus::Bus(const char* inifile)
@@ -64,36 +64,48 @@ Module* Bus::GetModuleByAddr(uint32_t addr)
 	}
 }
 
-int Bus::SendData()
+bool Bus::SendData()
 {
 	char* buffer = new char[MAX_TGR_SIZE];
 	Telegram* telegram = (Telegram*) buffer;
 
+	bool result;
 	bool EOD = false;
 
 	while(!EOD)
 	{
 		size_t tgoffset = 0;
-		size_t tglength = sizeof(telegram->Length);
+		ptrdiff_t tglength = telegram->Data - (char*) telegram; // If additional fields are added in the Telegram struct after Length field
+		if (tglength < 0)
+		{
+			for (auto it = begin(); it != end(); ++it) (&it->second)->Counter = 0;
+			result = false;
+			break;
+		}
+
 		for (auto it = begin(); it != end(); ++it)
 		{
 			EOD = true;
 			Module* module = &it->second;
 			if (!module->Remainder) continue;
 			size_t partlength = module->Remainder > module->Length ? module->Length : module->Remainder;
-			if (tglength + partlength + sizeof(Datagram) > MAX_TGR_SIZE) break;
+			if (tglength + sizeof(Datagram) + partlength + sizeof(counter_t) > MAX_TGR_SIZE) break;
 			Datagram* datagram = (Datagram*) (telegram->Data + tgoffset);
-			datagram->Command = 0;	// certain value unknown by task, it must be to do in the future
+			datagram->Command = module->Command;
 			datagram->Addr = module->Addr;
 			datagram->Length = partlength;
-			std::copy(module->Data->begin() + module->Offset, module->Data->end(), datagram->Data);
+			std::copy(module->Data->begin() + module->Offset, module->Data->begin() + module->Offset + partlength, datagram->Data);
 			module->Offset += partlength;
 			module->Remainder -= partlength;
-			tglength += sizeof(Datagram) + partlength;
-			tgoffset += sizeof(Datagram) + partlength;
+			tglength += sizeof(Datagram) + datagram->Length + sizeof(counter_t);
+			tgoffset += sizeof(Datagram) + datagram->Length + sizeof(counter_t);
+			counter_t* counter = (counter_t*) (datagram->Data + datagram->Length);
+			*counter = module->Counter;
 			EOD = false;
 		}
 		telegram->Length = tglength;
+
+		PrintTelegram(telegram, tglength); // debug
 
 /* AS SAMPLE OF SOCKET TRANSMISSION
 		int sentbyte = 0;
@@ -122,5 +134,28 @@ int Bus::SendData()
 	}
 
 	delete[] buffer;
-	return 0;
+	return result;
+}
+
+void Bus::PrintTelegram(const Telegram* telegram, uint16_t length) // debug
+{
+	if (!telegram) return;
+
+	bool EOT = false;
+	Datagram* datagram = (Datagram*) telegram->Data;
+	std::cout<<"Telegram length: "<<telegram->Length<<std::endl;
+	while(!EOT)
+	{
+		std::cout<<"\t"<<"Datagram address: 0x"<<std::hex<<datagram->Addr<<std::endl;
+		std::cout<<"\t"<<"Module name: "<<GetModuleByAddr(datagram->Addr)->Name<<std::endl;
+		std::cout<<"\t"<<"Datagram command: "<<datagram->Command<<std::endl;
+		std::cout<<"\t"<<"Module message length: "<<std::dec<<GetModuleByAddr(datagram->Addr)->Length<<std::endl;
+		std::cout<<"\t"<<"Datagram message length: "<<std::dec<<datagram->Length<<std::endl;
+		std::string message(datagram->Data, datagram->Length);
+		std::cout<<"\t"<<"Datagram message: "<<message<<std::endl;
+		counter_t* counter = (counter_t*) (datagram->Data + datagram->Length);
+		std::cout<<"\t"<<"Datagram counter: "<<std::dec<<*counter<<std::endl<<std::endl;
+		datagram = (Datagram*) (datagram->Data + datagram->Length + sizeof(counter_t));
+		if ((char*) datagram >= (char*) telegram + telegram->Length) EOT = true;
+	}
 }

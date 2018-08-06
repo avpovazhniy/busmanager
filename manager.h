@@ -11,6 +11,8 @@
 #define MAX_MSG_SIZE (300)
 #define MAX_SCK_SIZE (MAX_TGR_SIZE)
 
+typedef uint16_t counter_t;
+
 #pragma pack(push, 1)
 typedef struct Telegram_tag
 {
@@ -39,6 +41,7 @@ class Module
 		void PrintMessage(); // debug
 
 		std::string Name;
+		uint8_t Command;
 		std::vector <char>* Data;
 
 	private:
@@ -56,9 +59,13 @@ class Bus
 		std::unordered_map <uint32_t, Module>::iterator begin();
 		std::unordered_map <uint32_t, Module>::iterator end();
 		Module* GetModuleByAddr(uint32_t);
-		int SendData();
+		bool SendData();
 
 		std::unordered_map <uint32_t, Module> Modules;
+
+	private:
+		void PrintTelegram(const Telegram*, uint16_t);
+
 };
 
 #endif
