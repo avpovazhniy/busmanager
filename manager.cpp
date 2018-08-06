@@ -109,29 +109,48 @@ bool Bus::SendData()
 
 		PrintTelegram(telegram, tglength); // debug
 
-/* AS SAMPLE OF SOCKET TRANSMISSION
-		int sentbyte = 0;
-		size_t remainder = tglength;
-		char* tmp = buffer;
-		size_t total = 0;
+/* ONLY AS SAMPLE OF SOCKET SENDING
+		char* tmp;
+		int bytes;
+		size_t total;
+		size_t remainder;
+
+		remainder = tglength;
+		tmp = buffer;
+		total = 0;
 		do
 		{
-			int size = (int) MAX_SCK_SIZE;
-			if (remainder < MAX_SCK_SIZE)
-			{
-				size = (int) remainder;
-			}
+			int size = remainder <= MAX_SCK_SIZE ? (int) remainder : (int) MAX_SCK_SIZE;
 
-			sentbyte = send(sock, tmp, size, 0);
-			if (sentbyte < 0)
+			bytes = send(sock, tmp, size, 0);
+			if (bytes < 0)
 			{
 				// loss of the telegrams is excluded - do nothing
 			}
 
-			tmp += (size_t) sentbyte;
-			total += (size_t) sentbyte;
-			remainder -= (size_t) sentbyte;
-		} while (sentbyte != 0 && total < tglength);*/
+			tmp += (size_t) bytes;
+			total += (size_t) bytes;
+			remainder -= (size_t) bytes;
+		} while (bytes != 0 && total < tglength);*/
+
+/* ONLY AS SAMPLE OF SOCKET READING
+		remainder = tglength;
+		tmp = buffer;
+		total = 0;
+		do
+		{
+			int size = remainder <= MAX_SCK_SIZE ? (int) remainder : (int) MAX_SCK_SIZE;
+
+			bytes = recv(sock, tmp, size, 0);
+			if (bytes < 0)
+			{
+				// loss of the telegrams is excluded - do nothing
+			}
+
+			tmp += (size_t) bytes;
+			total += (size_t) bytes;
+			remainder -= (size_t) bytes;
+		} while (bytes != 0 && total < tglength);*/
 
 	}
 
