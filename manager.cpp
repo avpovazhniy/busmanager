@@ -72,7 +72,7 @@ bool Bus::SendData()
 	bool result;
 	bool EOD = false;
 
-	while(!EOD)
+	while (!EOD)
 	{
 		memset(buffer, 0, MAX_TGR_SIZE);
 
@@ -107,51 +107,24 @@ bool Bus::SendData()
 		}
 		telegram->Length = tglength;
 
+		Sock(/*socket sock,*/ buffer, tglength, Send); // ONLY AS SAMPLE OF SOCKET SENDING
+
+		std::cout<<"Sent telegram:"<<std::endl; // debug
 		PrintTelegram(telegram, tglength); // debug
 
-/* ONLY AS SAMPLE OF SOCKET SENDING
-		char* tmp;
-		int bytes;
-		size_t total;
-		size_t remainder;
+		Sock(/*socket sock,*/ buffer, tglength, Recv); // ONLY AS SAMPLE OF SOCKET READING
 
-		remainder = tglength;
-		tmp = buffer;
-		total = 0;
-		do
+		std::cout<<"Received telegram:"<<std::endl; // debug
+		PrintTelegram(telegram, tglength); // debug
+
+		bool EOT = false;
+		Datagram* datagram = (Datagram*) telegram->Data;
+		while(!EOT)
 		{
-			int size = remainder <= MAX_SCK_SIZE ? (int) remainder : (int) MAX_SCK_SIZE;
-
-			bytes = send(sock, tmp, size, 0);
-			if (bytes < 0)
-			{
-				// loss of the telegrams is excluded - do nothing
-			}
-
-			tmp += (size_t) bytes;
-			total += (size_t) bytes;
-			remainder -= (size_t) bytes;
-		} while (bytes != 0 && total < tglength);*/
-
-/* ONLY AS SAMPLE OF SOCKET READING
-		remainder = tglength;
-		tmp = buffer;
-		total = 0;
-		do
-		{
-			int size = remainder <= MAX_SCK_SIZE ? (int) remainder : (int) MAX_SCK_SIZE;
-
-			bytes = recv(sock, tmp, size, 0);
-			if (bytes < 0)
-			{
-				// loss of the telegrams is excluded - do nothing
-			}
-
-			tmp += (size_t) bytes;
-			total += (size_t) bytes;
-			remainder -= (size_t) bytes;
-		} while (bytes != 0 && total < tglength);*/
-
+			datagram = (Datagram*) (datagram->Data + datagram->Length + sizeof(counter_t));
+			if ((char*) datagram >= (char*) telegram + telegram->Length) EOT = true;
+		}
+		
 	}
 
 	delete[] buffer;
@@ -179,4 +152,42 @@ void Bus::PrintTelegram(const Telegram* telegram, uint16_t length) // debug
 		datagram = (Datagram*) (datagram->Data + datagram->Length + sizeof(counter_t));
 		if ((char*) datagram >= (char*) telegram + telegram->Length) EOT = true;
 	}
+}
+
+void Bus::Sock(/*socket sock,*/ char* buffer, uint16_t length, SocketFunction sf) // ONLY AS SAMPLE
+{
+	char* tmp;
+	int bytes = 0;
+	size_t total;
+	size_t remainder;
+
+	remainder = length;
+	tmp = buffer;
+	total = 0;
+	do
+	{
+		int size = remainder <= MAX_SCK_SIZE ? (int) remainder : (int) MAX_SCK_SIZE;
+
+		switch(sf)
+		{
+			case Recv:
+			{
+//				bytes = recv(sock, tmp, size, 0);
+				break;
+			}
+			case Send:
+			{
+//				bytes = send(sock, tmp, size, 0);
+				break;
+			}
+		}
+		if (bytes < 0)
+		{
+			// loss of the telegrams is excluded - do nothing
+		}
+
+		tmp += (size_t) bytes;
+		total += (size_t) bytes;
+		remainder -= (size_t) bytes;
+	} while (bytes != 0 && total < length);
 }

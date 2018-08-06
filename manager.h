@@ -67,6 +67,9 @@ class Bus
 	private:
 		void PrintTelegram(const Telegram*, uint16_t);
 
+		enum SocketFunction{Send, Recv}; // ONLY AS SAMPLE
+		void Sock(/*socket,*/ char*, uint16_t, SocketFunction); // ONLY AS SAMPLE
+
 };
 
 #endif
