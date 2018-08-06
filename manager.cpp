@@ -12,7 +12,7 @@ Module::Module(const char* name, uint32_t addr, uint16_t length)
 	Remainder = 0;
 }
 
-int Module::SetData(std::vector <char>* data)
+bool Module::SetData(std::vector <char>* data)
 {
 	if (data)
 	{

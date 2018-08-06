@@ -35,7 +35,7 @@ class Module
 	friend class Bus;
 	public:
 		Module(const char*, uint32_t, uint16_t);
-		int SetData(std::vector <char>*);
+		bool SetData(std::vector <char>*);
 		void PrintMessage(); // debug
 
 		std::string Name;
